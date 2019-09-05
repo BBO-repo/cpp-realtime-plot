@@ -4,11 +4,10 @@ two threads: one for plotting and another for feed data
 one class to handle plot and another to generate data
 
 for example
-![](example.gif)
+![](random.gif)
 
 # todo
 add explanations  
-implement class that generates data  
 clean code  
 
 
