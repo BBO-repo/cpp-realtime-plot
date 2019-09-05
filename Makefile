@@ -9,7 +9,7 @@ ODIR = obj
 BDIR = build
 
 #compile and link flags
-CXX    = g++ -std=c++14
+CXX    = g++ -std=c++14 -Wall
 CFLAGS = -I$(IDIR) -I/home/brahim/Work/tools/matplotpp/include
 LIBS   = $(LDIR) -rdynamic -lmatplotpp -lGLU -lGL -lglut -lpthread
 
