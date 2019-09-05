@@ -1,40 +1,23 @@
-#include <thread>
-#include <chrono>
-#include <iostream>
-#include <queue>
-
 #include "plotter.h"
 #include "feeder.h"
 
-int main(int argc, char *argv[])
-{
-  // condition variable https://fr.cppreference.com/w/cpp/thread/condition_variable
-  //std::queue<int> produced_nums;
+int main(int argc, char *argv[]) {
+
   std::mutex m;
-  std::condition_variable cond_var;
+  std::condition_variable cond_var; // condition variable https://fr.cppreference.com/w/cpp/thread/condition_variable
   bool done = false;
   bool notified = false;
-  std::thread producer([&]() {
-    for (int i = 0; i < 1000; ++i)
-    {
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
-      std::unique_lock<std::mutex> lock(m);
-      //std::cout << "producing " << i << '\n';
-      notified = true;
-      cond_var.notify_one();
-    }
+  std::queue<double> data;
 
-    done = true;
-    cond_var.notify_one();
-  });
+  Feeder *fd = new Feeder(&m, &cond_var, &notified, &done, &data);
+  std::thread th(&Feeder::run, fd);
 
-  MP *mp = new MP(&m,&cond_var,&notified, &done);
+  Plotter *mp = new Plotter(&m, &cond_var, &notified, &done, &data);
   mp->setInstance(mp);
   mp->startPlotter(argc, argv);
 
+  delete fd;
   delete mp;
-
-  producer.join();
 
   return 0;
 }
